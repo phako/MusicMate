@@ -30,6 +30,8 @@ internal class AudioControls : Box {
     private Scale scale;
     private dynamic Gst.Element playbin;
 
+    public signal string? need_next ();
+
     public string uri {
         set {
             var resume = false;
@@ -53,6 +55,16 @@ internal class AudioControls : Box {
     public AudioControls () {
         Object ( orientation: Orientation.VERTICAL, spacing: 3);
         this.set_homogeneous (false);
+
+        this.playbin = Gst.ElementFactory.make ("playbin2", null);
+        this.playbin.about_to_finish.connect ( () => {
+            debug ("%s %s %s",
+                   this.playbin.current_state.to_string (),
+                   this.playbin.next_state.to_string (),
+                   this.playbin.pending_state.to_string ());
+
+            this.playbin.uri = need_next ();
+        });
 
         var adjustment = null as Adjustment;
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);
@@ -90,9 +102,15 @@ internal class AudioControls : Box {
         next_button.show ();
         controls.pack_start (next_button);
         gtk_button_box_set_child_non_homogeneous (controls, next_button, true);
+        next_button.clicked.connect ( () => {
+            debug ("%s %s %s",
+                   this.playbin.current_state.to_string (),
+                   this.playbin.next_state.to_string (),
+                   this.playbin.pending_state.to_string ());
+
+            this.uri = need_next ();
+        });
 
         this.pack_start (controls);
-
-        this.playbin = Gst.ElementFactory.make ("playbin2", null);
     }
 }

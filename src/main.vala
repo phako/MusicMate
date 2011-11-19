@@ -25,6 +25,7 @@ int main (string[] args) {
     scrolled.show ();
 
     var list_store = new FilteredSongList ();
+    controls.need_next.connect (list_store.get_next);
 
     var icon_view = new IconView.with_model (new AlbumListStore ());
     icon_view.show ();
