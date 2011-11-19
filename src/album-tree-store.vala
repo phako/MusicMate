@@ -14,16 +14,29 @@ internal class AlbumListStore : ListStore {
 
 SELECT
     nie:title(?album)
-    (SELECT GROUP_CONCAT(nmm:artistName(?artist), ",") WHERE { ?album nmm:albumArtist ?artist })
+    tracker:coalesce(
+        (SELECT GROUP_CONCAT(nmm:artistName(?artist), ",")
+         WHERE { ?album nmm:albumArtist ?artist }),
+        (SELECT GROUP_CONCAT((SELECT nmm:artistName(nmm:performer(?_12)) as perf
+                              WHERE { ?_12 nmm:musicAlbum ?album }
+                              GROUP BY ?perf), ",") as album_performer
+         WHERE { })
+    ) as album_artist
+
     tracker:coalesce(nmm:albumTrackCount(?album),
-                     (SELECT COUNT(?item) WHERE { ?item nmm:musicAlbum ?album
-                                          FILTER(EXISTS { ?item tracker:available "true" }) }))
+                     (SELECT COUNT(?_1)
+                      WHERE { ?_1 nmm:musicAlbum ?album;
+                                  tracker:available "true" }))
     tracker:id(?album)
+    (SELECT GROUP_CONCAT(fn:year-from-dateTime(?c), ",")
+     WHERE { ?_2 nmm:musicAlbum ?album;
+                 nie:contentCreated ?c;
+                 tracker:available "true" }) as albumyear
 {
     ?album a nmm:MusicAlbum
-    FILTER (EXISTS { ?item nmm:musicAlbum ?album; tracker:available "true" })
+    FILTER (EXISTS { ?_3 nmm:musicAlbum ?album; tracker:available "true" })
 }
-ORDER BY nie:title(?album)
+ORDER BY ?album_artist ?albumyear nie:title(?album)
 """;
 
     public AlbumListStore () {
