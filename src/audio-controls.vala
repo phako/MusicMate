@@ -30,6 +30,7 @@ internal class AudioControls : Box {
     private Scale scale;
     private dynamic Gst.Element playbin;
     private ToggleButton play_button;
+    private Playmate.MediaKeys keys;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -55,6 +56,8 @@ internal class AudioControls : Box {
     public AudioControls () {
         Object ( orientation: Orientation.VERTICAL, spacing: 3);
         this.set_homogeneous (false);
+
+        this.keys = new Playmate.MediaKeys ();
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
         this.playbin.about_to_finish.connect ( () => {
@@ -105,5 +108,10 @@ internal class AudioControls : Box {
         });
 
         this.pack_start (controls);
+
+        this.keys.play.connect ( () => { play_button.set_active (true); } );
+        this.keys.pause.connect ( () => { play_button.set_active (false); } );
+        this.keys.next.connect ( () => { next_button.clicked (); } );
+        this.keys.previous.connect ( () => { back_button.clicked (); } );
     }
 }

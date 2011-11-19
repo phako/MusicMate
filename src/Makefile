@@ -1,10 +1,14 @@
+NULL=
+
 SOURCES=main.vala \
 		album-tree-store.vala \
 		album-art-cache.vala \
 		song-list-store.vala \
 		filtered-song-list.vala \
 		audio-controls.vala \
-		playmate-application.vala
+		playmate-application.vala \
+		multimedia-keys.vala \
+		$(NULL)
 
 PACKAGES=--pkg gtk+-3.0 \
 		 --pkg gdk-pixbuf-2.0 \
