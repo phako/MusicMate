@@ -9,6 +9,8 @@ internal class FilteredSongList : TreeModelFilter {
     public string albums { get; set; }
     public bool shuffle { get; set; }
 
+    public signal void current (TreePath path);
+
     public FilteredSongList () {
         var model = new SongListStore ();
         Object (child_model : model,
@@ -63,6 +65,8 @@ internal class FilteredSongList : TreeModelFilter {
         this.get (iter,
                   SongListStoreColumn.URL,
                       out url);
+
+        this.current (path);
 
         return url;
     }

@@ -112,6 +112,10 @@ internal class Playmate.Application : Gtk.Application {
             }
         });
 
+        list_store.current.connect ( (path) => {
+            list_view.set_cursor (path, null, false);
+        });
+
         scrolled.add (list_view);
 
         paned.pack_end (scrolled);
