@@ -14,15 +14,7 @@ internal class FilteredSongList : TreeModelFilter {
         Object (child_model : model,
                 virtual_root : null );
 
-        this.notify["albums"].connect ( () => {
-            this.album_list.clear ();
-            foreach (var album in this.albums.split (",")) {
-                this.album_list.add (album);
-            }
-
-            this.refilter ();
-            this.generate_shuffle_list ();
-        });
+        this.notify["albums"].connect (this.update_filter);
 
         this.album_list = new HashSet<string> ();
         this.set_visible_func (this.filter_albums);
@@ -30,6 +22,16 @@ internal class FilteredSongList : TreeModelFilter {
         model.finished.connect ( () => {
             this.generate_shuffle_list ();
         });
+    }
+
+    private void update_filter () {
+        this.album_list.clear ();
+        foreach (var album in this.albums.split (",")) {
+            this.album_list.add (album);
+        }
+
+        this.refilter ();
+        this.generate_shuffle_list ();
     }
 
     private bool filter_albums (TreeModel model, TreeIter iter) {
