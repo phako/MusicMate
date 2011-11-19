@@ -24,7 +24,7 @@ int main (string[] args) {
     var scrolled = new ScrolledWindow (null, null);
     scrolled.show ();
 
-    var list_store = new SongListStore ();
+    var list_store = new FilteredSongList ();
 
     var icon_view = new IconView.with_model (new AlbumListStore ());
     icon_view.show ();

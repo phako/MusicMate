@@ -2,6 +2,7 @@ SOURCES=main.vala \
 		album-tree-store.vala \
 		album-art-cache.vala \
 		song-list-store.vala \
+		filtered-song-list.vala \
 		audio-controls.vala
 
 PACKAGES=--pkg gtk+-3.0 \

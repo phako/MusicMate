@@ -6,11 +6,12 @@ internal enum SongListStoreColumn {
     TRACK,
     ALBUM,
     TITLE,
-    URL
+    URL,
+    ALUBUM_ID
 }
 
 internal class SongListStore : ListStore {
-    private const string QUERY_TEMPLATE =
+    private const string QUERY =
 """
 SELECT
         nie:title(nmm:musicAlbum(?song))
@@ -18,9 +19,9 @@ SELECT
         nmm:trackNumber(?song)
         nie:title(?song)
         nie:url(?song)
+        tracker:id(nmm:musicAlbum(?song))
 {
         ?song a nmm:MusicPiece
-        %s
 }
 
 ORDER BY
@@ -30,7 +31,6 @@ ORDER BY
         nie:title(?song)
 """;
 
-    public string albums { get; set; }
     public SongListStore () {
         Object ();
 
@@ -38,19 +38,17 @@ ORDER BY
                          typeof (uint),
                          typeof (string),
                          typeof (string),
-                         typeof (string)};
+                         typeof (string),
+                         typeof (string) };
         this.set_column_types (types);
         this.fill_list_store.begin ();
-        this.notify["albums"].connect ( (s, p) => {
-            this.fill_list_store.begin ();
-        });
     }
 
     private async void fill_list_store () {
         try {
             this.clear ();
             var connection = yield Sparql.Connection.get_async ();
-            var cursor = yield connection.query_async (this.get_query ());
+            var cursor = yield connection.query_async (QUERY);
             while (cursor.next ()) {
                 TreeIter iter;
                 this.append (out iter);
@@ -64,23 +62,12 @@ ORDER BY
                           SongListStoreColumn.TITLE,
                               cursor.get_string (3),
                           SongListStoreColumn.URL,
-                              cursor.get_string (4));
+                              cursor.get_string (4),
+                          SongListStoreColumn.ALUBUM_ID,
+                              cursor.get_string (5));
             }
         } catch (Error error) {
             critical ("Something failed: %s", error.message);
         }
-    }
-
-    private string get_query () {
-        var filter = "";
-        if (this.albums != null && this.albums.length > 0) {
-            filter += "FILTER(tracker:id(nmm:musicAlbum(?song)) IN (";
-            filter += this.albums;
-            filter += "))";
-        }
-
-        debug ("%s", QUERY_TEMPLATE.printf (filter));
-
-        return QUERY_TEMPLATE.printf (filter);
     }
 }
