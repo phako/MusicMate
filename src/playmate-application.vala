@@ -45,6 +45,8 @@ internal class Playmate.Application : Gtk.Application {
         icon_view.set_pixbuf_column (AlbumListStoreColumn.ALBUM_ART);
         icon_view.set_text_column (AlbumListStoreColumn.TITLE);
         icon_view.set_selection_mode (SelectionMode.MULTIPLE);
+        icon_view.set_columns (2);
+        icon_view.set_item_width (115);
 
         icon_view.selection_changed.connect (() => {
             var albums = new string[0];
