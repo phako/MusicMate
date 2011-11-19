@@ -114,6 +114,10 @@ internal class AudioControls : Box {
 
         this.keys.play.connect ( () => { play_button.set_active (true); } );
         this.keys.pause.connect ( () => { play_button.set_active (false); } );
+        this.keys.stop.connect ( () => {
+            play_button.set_active (false);
+            this.playbin.set_state (Gst.State.READY);
+        });
         this.keys.next.connect ( () => { next_button.clicked (); } );
         this.keys.previous.connect ( () => { back_button.clicked (); } );
     }

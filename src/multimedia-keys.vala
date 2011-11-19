@@ -14,6 +14,7 @@ internal class Playmate.MediaKeys : Object {
 
     public signal void play ();
     public signal void pause ();
+    public signal void stop ();
     public signal void next ();
     public signal void previous ();
 
@@ -48,6 +49,9 @@ internal class Playmate.MediaKeys : Object {
                 break;
             case "Pause":
                 this.pause ();
+                break;
+            case "Stop":
+                this.stop ();
                 break;
             case "Next":
                 this.next ();
