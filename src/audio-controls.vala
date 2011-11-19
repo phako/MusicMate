@@ -46,6 +46,9 @@ internal class AudioControls : Box {
             }
             playbin.uri = value;
             this.play_button.set_active (true);
+            if (resume) {
+                this.playbin.set_state (Gst.State.PLAYING);
+            }
         }
 
         get {
