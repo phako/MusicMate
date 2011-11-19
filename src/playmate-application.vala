@@ -1,8 +1,10 @@
 using Gtk;
 
-internal class PlaymateApplication : Gtk.Application {
-    public PlaymateApplication () {
-        Object (application_id : "org.jensge.PlayMate",
+internal class Playmate.Application : Gtk.Application {
+    public const string APPNAME = "org.jensge.PlayMate";
+
+    public Application () {
+        Object (application_id : APPNAME,
                 flags: ApplicationFlags.FLAGS_NONE);
     }
 
