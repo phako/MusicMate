@@ -58,11 +58,6 @@ internal class AudioControls : Box {
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
         this.playbin.about_to_finish.connect ( () => {
-            debug ("%s %s %s",
-                   this.playbin.current_state.to_string (),
-                   this.playbin.next_state.to_string (),
-                   this.playbin.pending_state.to_string ());
-
             this.playbin.uri = need_next ();
         });
 
