@@ -98,18 +98,7 @@ internal class Playmate.Application : Gtk.Application {
                                                  "text",
                                                  SongListStoreColumn.ALBUM);
         list_view.row_activated.connect ( (path) => {
-            TreeIter iter;
-            var model = list_view.model;
-
-            if (model.get_iter (out iter, path)) {
-                string url = null;
-
-                model.get (iter,
-                           SongListStoreColumn.URL,
-                           ref url,
-                           -1);
-                controls.uri = url;
-            }
+            controls.uri = list_store.set_current (path);
         });
 
         list_store.current.connect ( (path) => {

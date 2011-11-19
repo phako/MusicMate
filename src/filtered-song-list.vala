@@ -71,6 +71,23 @@ internal class FilteredSongList : TreeModelFilter {
         return url;
     }
 
+    public string? set_current (TreePath path) {
+        var index = path.get_indices ()[0];
+        if (this.shuffle) {
+            for (var i = 0; i < this.shuffle_list.length; i++) {
+                if (this.shuffle_list[i] == index) {
+                    this.next_song = i;
+
+                    break;
+                }
+            }
+        } else {
+            this.next_song = index;
+        }
+
+        return this.get_current ();
+    }
+
     public string? get_next () {
         var next = this.get_current ();
         this.next_song = (this.next_song + 1) % this.shuffle_list.length;
