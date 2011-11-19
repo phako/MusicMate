@@ -29,6 +29,7 @@ internal class PlayPauseButton : ToggleButton {
 internal class AudioControls : Box {
     private Scale scale;
     private dynamic Gst.Element playbin;
+    private ToggleButton play_button;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -43,9 +44,7 @@ internal class AudioControls : Box {
                 resume = true;
             }
             playbin.uri = value;
-            if (resume) {
-                playbin.set_state (Gst.State.PLAYING);
-            }
+            this.play_button.set_active (true);
         }
 
         get {
@@ -88,7 +87,7 @@ internal class AudioControls : Box {
             this.uri = need_previous ();
         });
 
-        var play_button = new PlayPauseButton ();
+        play_button = new PlayPauseButton ();
         play_button.show ();
         controls.pack_start (play_button);
         play_button.toggled.connect ( (source) => {
