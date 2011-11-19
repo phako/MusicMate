@@ -44,7 +44,6 @@ int main (string[] args) {
                            AlbumListStoreColumn.ID,
                            ref album_id,
                            -1);
-                debug ("%s", album_id.to_string ());
                 albums += album_id.to_string ();
             }
         }

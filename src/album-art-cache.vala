@@ -105,7 +105,6 @@ internal class AlbumArtCache : Object {
             var simple_key = "album-%s".printf (
                 normalize_and_hash (artist + "\t" + album, true, true));
             var path = Path.build_filename (this.cache_dir, "90", simple_key + ".jpg");
-            debug ("Checking path %s for album %s", path, album);
             return new Pixbuf.from_file_at_scale (path,
                                                   96,
                                                   96,

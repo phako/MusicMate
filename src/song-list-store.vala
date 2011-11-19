@@ -31,6 +31,8 @@ ORDER BY
         nie:title(?song)
 """;
 
+    public signal void finished ();
+
     public SongListStore () {
         Object ();
 
@@ -69,5 +71,7 @@ ORDER BY
         } catch (Error error) {
             critical ("Something failed: %s", error.message);
         }
+
+        this.finished ();
     }
 }
