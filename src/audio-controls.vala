@@ -93,6 +93,9 @@ internal class AudioControls : Box {
         controls.pack_start (play_button);
         play_button.toggled.connect ( (source) => {
             if (source.get_active ()) {
+                if (this.playbin.uri == null) {
+                    this.uri = this.need_next ();
+                }
                 playbin.set_state (Gst.State.PLAYING);
             } else {
                 playbin.set_state (Gst.State.PAUSED);
