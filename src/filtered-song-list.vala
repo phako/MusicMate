@@ -7,6 +7,7 @@ internal class FilteredSongList : TreeModelFilter {
     private int next_song;
 
     public string albums { get; set; }
+    public bool shuffle { get; set; }
 
     public FilteredSongList () {
         var model = new SongListStore ();
@@ -49,9 +50,8 @@ internal class FilteredSongList : TreeModelFilter {
         return album_list.contains (tracker_id);
     }
 
-    public string? get_next () {
+    private string? get_current () {
         var index = this.shuffle_list[this.next_song];
-        this.next_song = this.next_song % this.shuffle_list.length;
 
         var path = new TreePath.from_indices (index);
         TreeIter iter;
@@ -65,15 +65,30 @@ internal class FilteredSongList : TreeModelFilter {
         return url;
     }
 
+    public string? get_next () {
+        var next = this.get_current ();
+        this.next_song = (this.next_song + 1) % this.shuffle_list.length;
+        return next;
+    }
+
+    public string? get_previous () {
+        this.next_song = (this.next_song -1 ) % this.shuffle_list.length;
+        return this.get_current ();
+    }
+
     private void generate_shuffle_list () {
         var rows = this.iter_n_children (null);
         this.shuffle_list = new int[rows];
         this.shuffle_list[0] = 0;
 
         for (int i = 1; i < rows; i++) {
-            var j = Random.int_range (0, i);
-            this.shuffle_list[i] = this.shuffle_list[j];
-            this.shuffle_list[j] = i;
+            if (this.shuffle) {
+                var j = Random.int_range (0, i);
+                this.shuffle_list[i] = this.shuffle_list[j];
+                this.shuffle_list[j] = i;
+            } else {
+                this.shuffle_list[i] = i;
+            }
         }
 
         this.next_song = 0;

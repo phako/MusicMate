@@ -25,7 +25,9 @@ int main (string[] args) {
     scrolled.show ();
 
     var list_store = new FilteredSongList ();
+    list_store.shuffle = true;
     controls.need_next.connect (list_store.get_next);
+    controls.need_previous.connect (list_store.get_previous);
 
     var icon_view = new IconView.with_model (new AlbumListStore ());
     icon_view.show ();

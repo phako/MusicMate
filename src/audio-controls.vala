@@ -31,6 +31,7 @@ internal class AudioControls : Box {
     private dynamic Gst.Element playbin;
 
     public signal string? need_next ();
+    public signal string? need_previous ();
 
     public string uri {
         set {
@@ -83,6 +84,9 @@ internal class AudioControls : Box {
         back_button.show ();
         controls.pack_start (back_button);
         gtk_button_box_set_child_non_homogeneous (controls, back_button, true);
+        back_button.clicked.connect ( () => {
+            this.uri = need_previous ();
+        });
 
         var play_button = new PlayPauseButton ();
         play_button.show ();
@@ -103,11 +107,6 @@ internal class AudioControls : Box {
         controls.pack_start (next_button);
         gtk_button_box_set_child_non_homogeneous (controls, next_button, true);
         next_button.clicked.connect ( () => {
-            debug ("%s %s %s",
-                   this.playbin.current_state.to_string (),
-                   this.playbin.next_state.to_string (),
-                   this.playbin.pending_state.to_string ());
-
             this.uri = need_next ();
         });
 
