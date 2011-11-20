@@ -5,6 +5,7 @@ SOURCES=main.vala \
 		album-list-store.vala \
 		album-view.vala \
 		song-list-store.vala \
+		song-browser.vala \
 		filtered-song-list.vala \
 		audio-controls.vala \
 		application.vala \

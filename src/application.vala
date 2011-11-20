@@ -53,7 +53,8 @@ internal class MusicMate.Application : Gtk.Application {
         var scrolled = new ScrolledWindow (null, null);
         scrolled.show ();
 
-        var list_store = new FilteredSongList ();
+        var list_view = new SongBrowser ();
+        var list_store = list_view.model as FilteredSongList;
         list_store.shuffle = true;
         controls.need_next.connect (list_store.get_next);
         controls.need_previous.connect (list_store.get_previous);
@@ -72,32 +73,7 @@ internal class MusicMate.Application : Gtk.Application {
         scrolled = new ScrolledWindow (null, null);
         scrolled.show ();
 
-        var list_view = new TreeView.with_model (list_store);
         list_view.show ();
-        list_view.insert_column_with_attributes (-1,
-                                                 "Disc",
-                                                 new CellRendererText (),
-                                                 "text",
-                                                 SongListStoreColumn.DISC);
-
-        list_view.insert_column_with_attributes (-1,
-                                                 "Track",
-                                                 new CellRendererText (),
-                                                 "text",
-                                                 SongListStoreColumn.TRACK);
-
-        list_view.insert_column_with_attributes (-1,
-                                                 "Title",
-                                                 new CellRendererText (),
-                                                 "text",
-                                                 SongListStoreColumn.TITLE);
-
-        list_view.insert_column_with_attributes (-1,
-                                                 "Album",
-                                                 new CellRendererText (),
-                                                 "text",
-                                                 SongListStoreColumn.ALBUM);
-
         list_view.row_activated.connect ( (path) => {
             controls.uri = list_store.set_current (path);
         });
