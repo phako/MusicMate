@@ -19,6 +19,7 @@ using Gtk;
 using Notify;
 
 internal class MusicMate.Application : Gtk.Application {
+    private SongModelMixer mixer;
     public const string APPNAME = "org.jensge.MusicMate";
 
     public Application () {
@@ -55,9 +56,10 @@ internal class MusicMate.Application : Gtk.Application {
 
         var list_view = new SongBrowser ();
         var list_store = list_view.model as FilteredSongList;
-        list_store.shuffle = true;
-        controls.need_next.connect (list_store.get_next);
-        controls.need_previous.connect (list_store.get_previous);
+        this.mixer = new SongModelMixer (list_store);
+        this.mixer.shuffle = true;
+        controls.need_next.connect (this.mixer.get_next);
+        controls.need_previous.connect (this.mixer.get_previous);
 
         var album_view = new AlbumView ();
         album_view.show ();
@@ -75,10 +77,10 @@ internal class MusicMate.Application : Gtk.Application {
 
         list_view.show ();
         list_view.row_activated.connect ( (path) => {
-            controls.uri = list_store.set_current (path);
+            controls.uri = this.mixer.set_current (path);
         });
 
-        list_store.current.connect ( (path) => {
+        this.mixer.current.connect ( (path) => {
             list_view.set_cursor (path, null, false);
             TreeIter iter;
             list_store.get_iter (out iter, path);
