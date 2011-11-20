@@ -105,7 +105,11 @@ internal class MusicMate.AudioControls : Box {
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
         this.playbin.about_to_finish.connect ( () => {
+            // This event doesn't come from main-tread, and need_next triggers
+            // UI updates, so let's lock the GDK Threads
+            Gdk.threads_enter ();
             this.playbin.uri = need_next ();
+            Gdk.threads_leave ();
         });
 
         this.meta_data = new Label (null);
