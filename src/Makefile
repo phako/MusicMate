@@ -1,8 +1,9 @@
 NULL=
 
 SOURCES=main.vala \
-		album-list-store.vala \
 		album-art-cache.vala \
+		album-list-store.vala \
+		album-view.vala \
 		song-list-store.vala \
 		filtered-song-list.vala \
 		audio-controls.vala \

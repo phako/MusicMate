@@ -58,34 +58,14 @@ internal class MusicMate.Application : Gtk.Application {
         controls.need_next.connect (list_store.get_next);
         controls.need_previous.connect (list_store.get_previous);
 
-        var icon_view = new IconView.with_model (new AlbumListStore ());
-        icon_view.show ();
-        icon_view.set_pixbuf_column (AlbumListStoreColumn.ALBUM_ART);
-        icon_view.set_text_column (AlbumListStoreColumn.TITLE);
-        icon_view.set_selection_mode (SelectionMode.MULTIPLE);
-        icon_view.set_columns (2);
-        icon_view.set_item_width (115);
+        var album_view = new AlbumView ();
+        album_view.show ();
+        album_view.bind_property ("albums",
+                                  list_store,
+                                  "albums",
+                                  BindingFlags.DEFAULT);
 
-        icon_view.selection_changed.connect (() => {
-            var albums = new string[0];
-            var items = icon_view.get_selected_items ();
-            var model = icon_view.get_model ();
-            foreach (var item in items) {
-                TreeIter iter;
-                if (model.get_iter (out iter, item)) {
-                    uint64 album_id = 0;
-                    model.get (iter,
-                               AlbumListStoreColumn.ID,
-                               ref album_id,
-                               -1);
-                    albums += album_id.to_string ();
-                }
-            }
-
-            list_store.albums = string.joinv (",", albums);
-        });
-
-        scrolled.add (icon_view);
+        scrolled.add (album_view);
         scrolled.set_size_request (300, -1);
         paned.pack_start (scrolled, false);
 
