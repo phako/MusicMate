@@ -1,10 +1,25 @@
-using Gtk;
+/*
+    This file is part of MusicMate.
+
+    MusicMate is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MusicMate is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MusicMate.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 int main (string[] args) {
     Gst.init (ref args);
-    Notify.init (Playmate.Application.APPNAME);
+    Notify.init (MusicMate.Application.APPNAME);
 
-    var app = new Playmate.Application ();
+    var app = new MusicMate.Application ();
     app.run (args);
 
     return 0;

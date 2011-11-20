@@ -1,10 +1,27 @@
+/*
+    This file is part of MusicMate.
+
+    MusicMate is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MusicMate is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MusicMate.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 using Gtk;
 
 extern void gtk_button_box_set_child_non_homogeneous (ButtonBox container,
                                                       Widget    child,
                                                       bool      homogenous);
 
-internal class PlayPauseButton : ToggleButton {
+internal class MusicMate.PlayPauseButton : ToggleButton {
     public Image play_image;
     public Image pause_image;
 
@@ -26,11 +43,11 @@ internal class PlayPauseButton : ToggleButton {
     }
 }
 
-internal class AudioControls : Box {
+internal class MusicMate.AudioControls : Box {
     private Scale scale;
     private dynamic Gst.Element playbin;
     private ToggleButton play_button;
-    private Playmate.MediaKeys keys;
+    private MusicMate.MediaKeys keys;
     private Label meta_data;
 
     public signal string? need_next ();
@@ -84,7 +101,7 @@ internal class AudioControls : Box {
         Object ( orientation: Orientation.VERTICAL, spacing: 3);
         this.set_homogeneous (false);
 
-        this.keys = new Playmate.MediaKeys ();
+        this.keys = new MusicMate.MediaKeys ();
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
         this.playbin.about_to_finish.connect ( () => {
@@ -97,6 +114,7 @@ internal class AudioControls : Box {
 
         var adjustment = null as Adjustment;
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);
+        this.scale.draw_value = false;
         this.scale.show ();
         this.pack_end (this.scale);
 
@@ -151,5 +169,15 @@ internal class AudioControls : Box {
         });
         this.keys.next.connect ( () => { next_button.clicked (); } );
         this.keys.previous.connect ( () => { back_button.clicked (); } );
+
+/*        Timeout.add_seconds (1, () => {
+            var format = Gst.Format.TIME;
+            int64 duration = 0;
+
+            this.playbin.query_position (ref format, out duration);
+            this.scale.set_value ((double) duration);
+
+            return true; 
+        }); */
     }
 }

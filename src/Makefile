@@ -1,13 +1,13 @@
 NULL=
 
 SOURCES=main.vala \
-		album-tree-store.vala \
+		album-list-store.vala \
 		album-art-cache.vala \
 		song-list-store.vala \
 		filtered-song-list.vala \
 		audio-controls.vala \
-		playmate-application.vala \
-		multimedia-keys.vala \
+		application.vala \
+		media-keys.vala \
 		$(NULL)
 
 PACKAGES=--pkg gtk+-3.0 \
@@ -20,5 +20,10 @@ PACKAGES=--pkg gtk+-3.0 \
 
 VALAFLAGS=--save-temps -g
 
-playmate: $(SOURCES)
+musicmate: $(SOURCES)
 	valac $(VALAFLAGS) -o $@ $(SOURCES) $(PACKAGES)
+
+clean:
+	rm -f *.c
+	rm -f musicmate
+	rm -f core

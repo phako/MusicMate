@@ -1,7 +1,24 @@
+/*
+    This file is part of MusicMate.
+
+    MusicMate is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MusicMate is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MusicMate.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 using Gee;
 using Gtk;
 
-internal class FilteredSongList : TreeModelFilter {
+internal class MusicMate.FilteredSongList : TreeModelFilter {
     private HashSet<string> album_list;
     private int[] shuffle_list;
     private int next_song;
@@ -101,6 +118,9 @@ internal class FilteredSongList : TreeModelFilter {
 
     private void generate_shuffle_list () {
         var rows = this.iter_n_children (null);
+        if (rows == 0)
+            return;
+
         this.shuffle_list = new int[rows];
         this.shuffle_list[0] = 0;
 

@@ -1,5 +1,22 @@
+/*
+    This file is part of MusicMate.
+
+    MusicMate is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MusicMate is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MusicMate.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 [DBus (name = "org.gnome.SettingsDaemon.MediaKeys")]
-internal interface GnomeMediaKeys : Object {
+internal interface Gnome.MediaKeys : Object {
     public abstract void grab_media_player_keys (string application,
                                                  uint   time) throws Error;
     public abstract void release_media_player_keys (string application)
@@ -9,8 +26,8 @@ internal interface GnomeMediaKeys : Object {
                                                  string key);
 }
 
-internal class Playmate.MediaKeys : Object {
-    private GnomeMediaKeys keys;
+internal class MusicMate.MediaKeys : Object {
+    private Gnome.MediaKeys keys;
 
     public signal void play ();
     public signal void pause ();
