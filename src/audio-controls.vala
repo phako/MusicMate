@@ -31,6 +31,7 @@ internal class AudioControls : Box {
     private dynamic Gst.Element playbin;
     private ToggleButton play_button;
     private Playmate.MediaKeys keys;
+    private Label meta_data;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -56,6 +57,29 @@ internal class AudioControls : Box {
         }
     }
 
+    public void set_meta_data (uint duration,
+                               string? artist,
+                               string? album,
+                               string? title) {
+        string text;
+        //this.scale.set_range (0.0, (double) (duration * Gst.SECOND));
+        if (title != null) {
+            text = "<i>%s</i>".printf (Markup.escape_text (title));
+        } else {
+            text = "<i>Unkown song</i>";
+        }
+
+        if (artist != null) {
+            text += " by <i>%s</i>".printf (Markup.escape_text (artist));
+        }
+
+        if (album != null) {
+            text += " from <i>%s</i>".printf (Markup.escape_text (album));
+        }
+
+        this.meta_data.set_markup (text);
+    }
+
     public AudioControls () {
         Object ( orientation: Orientation.VERTICAL, spacing: 3);
         this.set_homogeneous (false);
@@ -66,6 +90,10 @@ internal class AudioControls : Box {
         this.playbin.about_to_finish.connect ( () => {
             this.playbin.uri = need_next ();
         });
+
+        this.meta_data = new Label (null);
+        this.meta_data.show ();
+        this.pack_end (this.meta_data);
 
         var adjustment = null as Adjustment;
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);

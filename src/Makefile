@@ -14,7 +14,9 @@ PACKAGES=--pkg gtk+-3.0 \
 		 --pkg gdk-pixbuf-2.0 \
 		 --pkg gee-1.0 \
 		 --pkg tracker-sparql-0.10 \
-		 --pkg gstreamer-0.10
+		 --pkg gstreamer-0.10 \
+		 --pkg libnotify \
+		 $(NULL)
 
 VALAFLAGS=--save-temps -g
 

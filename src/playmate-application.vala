@@ -1,4 +1,5 @@
 using Gtk;
+using Notify;
 
 internal class Playmate.Application : Gtk.Application {
     public const string APPNAME = "org.jensge.PlayMate";
@@ -99,12 +100,58 @@ internal class Playmate.Application : Gtk.Application {
                                                  new CellRendererText (),
                                                  "text",
                                                  SongListStoreColumn.ALBUM);
+
         list_view.row_activated.connect ( (path) => {
             controls.uri = list_store.set_current (path);
         });
 
         list_store.current.connect ( (path) => {
             list_view.set_cursor (path, null, false);
+            TreeIter iter;
+            list_store.get_iter (out iter, path);
+            uint duration;
+            string album;
+            string artist;
+            string title;
+
+            list_store.get (iter,
+                            SongListStoreColumn.DURATION,
+                                out duration,
+                            SongListStoreColumn.ALBUM,
+                                out album,
+                            SongListStoreColumn.ARTIST,
+                                out artist,
+                            SongListStoreColumn.TITLE,
+                                out title
+                            );
+            controls.set_meta_data (duration, artist, album, title);
+
+            if (! win.is_active) {
+                var text = "";
+                if (title != null) {
+                    text = "<i>%s</i>".printf (Markup.escape_text (title));
+                } else {
+                    text = "<i>Unkown song</i>";
+                }
+
+                if (artist != null) {
+                    text += " by <i>%s</i>".printf (Markup.escape_text (artist));
+                }
+
+                if (album != null) {
+                    text += " from <i>%s</i>".printf (Markup.escape_text (album));
+                }
+
+                try {
+                    var notification = new Notification ("New Song", text, null);
+                    var cache = AlbumArtCache.get_default ();
+                    notification.set_image_from_pixbuf (cache.lookup (artist,
+                                                                      album));
+                    notification.show ();
+                } catch (Error error) {
+                    warning ("Failed to show notification: %s", error.message);
+                }
+            }
         });
 
         scrolled.add (list_view);

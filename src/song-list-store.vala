@@ -7,7 +7,9 @@ internal enum SongListStoreColumn {
     ALBUM,
     TITLE,
     URL,
-    ALUBUM_ID
+    ALUBUM_ID,
+    DURATION,
+    ARTIST
 }
 
 internal class SongListStore : ListStore {
@@ -20,6 +22,8 @@ SELECT
         nie:title(?song)
         nie:url(?song)
         tracker:id(nmm:musicAlbum(?song))
+        nfo:duration(?song)
+        nmm:artistName(nmm:performer(?song))
 {
         ?song a nmm:MusicPiece
 }
@@ -41,7 +45,10 @@ ORDER BY
                          typeof (string),
                          typeof (string),
                          typeof (string),
-                         typeof (string) };
+                         typeof (string),
+                         typeof (uint),
+                         typeof (string),
+                         typeof (string)};
         this.set_column_types (types);
         this.fill_list_store.begin ();
     }
@@ -66,7 +73,11 @@ ORDER BY
                           SongListStoreColumn.URL,
                               cursor.get_string (4),
                           SongListStoreColumn.ALUBUM_ID,
-                              cursor.get_string (5));
+                              cursor.get_string (5),
+                          SongListStoreColumn.DURATION,
+                              (uint) cursor.get_integer (6),
+                          SongListStoreColumn.ARTIST,
+                              cursor.get_string (7));
             }
         } catch (Error error) {
             critical ("Something failed: %s", error.message);
