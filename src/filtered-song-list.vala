@@ -23,7 +23,21 @@ internal class MusicMate.FilteredSongList : TreeModelFilter {
     private int[] shuffle_list;
     private int next_song;
 
-    public string albums { get; set; }
+    public string albums {
+        owned get {
+            return string.join (",", album_list.to_array ());
+        }
+
+        set {
+            this.album_list.clear ();
+            foreach (var album in value.split (",")) {
+                this.album_list.add (album);
+            }
+
+            this.refilter ();
+            this.generate_shuffle_list ();
+        }
+    }
     public bool shuffle { get; set; }
 
     public signal void current (TreePath path);
@@ -33,24 +47,12 @@ internal class MusicMate.FilteredSongList : TreeModelFilter {
         Object (child_model : model,
                 virtual_root : null );
 
-        this.notify["albums"].connect (this.update_filter);
-
         this.album_list = new HashSet<string> ();
         this.set_visible_func (this.filter_albums);
 
         model.finished.connect ( () => {
             this.generate_shuffle_list ();
         });
-    }
-
-    private void update_filter () {
-        this.album_list.clear ();
-        foreach (var album in this.albums.split (",")) {
-            this.album_list.add (album);
-        }
-
-        this.refilter ();
-        this.generate_shuffle_list ();
     }
 
     private bool filter_albums (TreeModel model, TreeIter iter) {
