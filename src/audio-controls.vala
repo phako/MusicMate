@@ -48,7 +48,6 @@ internal class MusicMate.AudioControls : Box {
     private dynamic Gst.Element playbin;
     private ToggleButton play_button;
     private MusicMate.MediaKeys keys;
-    private Label meta_data;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -74,27 +73,9 @@ internal class MusicMate.AudioControls : Box {
         }
     }
 
-    public void set_meta_data (uint duration,
-                               string? artist,
-                               string? album,
-                               string? title) {
-        string text;
-        //this.scale.set_range (0.0, (double) (duration * Gst.SECOND));
-        if (title != null) {
-            text = "<i>%s</i>".printf (Markup.escape_text (title));
-        } else {
-            text = "<i>Unkown song</i>";
-        }
-
-        if (artist != null) {
-            text += " by <i>%s</i>".printf (Markup.escape_text (artist));
-        }
-
-        if (album != null) {
-            text += " from <i>%s</i>".printf (Markup.escape_text (album));
-        }
-
-        this.meta_data.set_markup (text);
+    public void set_duration (uint duration) {
+        this.scale.set_range (0.0, (double) (duration * Gst.SECOND));
+        this.scale.set_value (0.0);
     }
 
     public AudioControls () {
@@ -111,10 +92,6 @@ internal class MusicMate.AudioControls : Box {
             this.playbin.uri = need_next ();
             Gdk.threads_leave ();
         });
-
-        this.meta_data = new Label (null);
-        this.meta_data.show ();
-        this.pack_end (this.meta_data);
 
         var adjustment = null as Adjustment;
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);

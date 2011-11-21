@@ -21,6 +21,7 @@ using Notify;
 internal class MusicMate.Application : Gtk.Application {
     private SongModelMixer mixer;
     public const string APPNAME = "org.jensge.MusicMate";
+    private Notification notification;
 
     public Application () {
         Object (application_id : APPNAME,
@@ -99,7 +100,7 @@ internal class MusicMate.Application : Gtk.Application {
                             SongListStoreColumn.TITLE,
                                 out title
                             );
-            controls.set_meta_data (duration, artist, album, title);
+            controls.set_duration (duration);
 
             if (! win.is_active) {
                 var text = "";
@@ -118,7 +119,13 @@ internal class MusicMate.Application : Gtk.Application {
                 }
 
                 try {
-                    var notification = new Notification ("New Song", text, null);
+                    if (this.notification == null) {
+                        this.notification = new Notification (" ", text, null);
+                    } else {
+                        string? empty = null;
+                        this.notification.update (" ", text, empty);
+                    }
+
                     var cache = AlbumArtCache.get_default ();
                     notification.set_image_from_pixbuf (cache.lookup (artist,
                                                                       album));
@@ -127,6 +134,9 @@ internal class MusicMate.Application : Gtk.Application {
                     warning ("Failed to show notification: %s", error.message);
                 }
             }
+
+            win.set_title ("%s - %s".printf (artist ?? "Unknown Artist",
+                                             title ?? "Unknown Song"));
         });
 
         scrolled.add (list_view);
