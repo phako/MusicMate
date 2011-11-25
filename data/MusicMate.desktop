@@ -1,0 +1,12 @@
+[Desktop Entry]
+Exec=musicmate
+Version=0.1
+Name=MusicMate
+GenericName=Audio Player
+X-GNOME-FullName=MusicMate Audio Player
+Comment=Play your music
+Icon=media-player-music-mate
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GNOME;Audio;Music;Player
