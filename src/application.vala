@@ -16,12 +16,9 @@
 */
 
 using Gtk;
-using Notify;
 
 internal class MusicMate.Application : Gtk.Application {
-    private SongModelMixer mixer;
     public const string APPNAME = "org.jensge.MusicMate";
-    private Notification notification;
 
     public Application () {
         Object (application_id : APPNAME,
@@ -36,115 +33,7 @@ internal class MusicMate.Application : Gtk.Application {
             return;
         }
 
-        var win = new Window ();
+        var win = new MainWindow ();
         this.add_window (win);
-        win.set_size_request (640, 480);
-        win.set_default_size (800, 480);
-
-        var box = new Box (Orientation.VERTICAL, 6);
-        box.show ();
-        win.add (box);
-
-        var controls = new AudioControls ();
-        controls.show ();
-        box.pack_end (controls, false);
-
-        var paned = new Box(Orientation.HORIZONTAL, 6);
-        paned.show ();
-
-        var scrolled = new ScrolledWindow (null, null);
-        scrolled.show ();
-
-        var list_view = new SongBrowser ();
-        var list_store = list_view.model as FilteredSongList;
-        this.mixer = new SongModelMixer (list_store);
-        this.mixer.shuffle = true;
-        controls.need_next.connect (this.mixer.get_next);
-        controls.need_previous.connect (this.mixer.get_previous);
-
-        var album_view = new AlbumView ();
-        album_view.show ();
-        album_view.bind_property ("albums",
-                                  list_store,
-                                  "albums",
-                                  BindingFlags.DEFAULT);
-
-        scrolled.add (album_view);
-        scrolled.set_size_request (300, -1);
-        paned.pack_start (scrolled, false);
-
-        scrolled = new ScrolledWindow (null, null);
-        scrolled.show ();
-
-        list_view.show ();
-        list_view.row_activated.connect ( (path) => {
-            controls.uri = this.mixer.set_current (path);
-        });
-
-        this.mixer.current.connect ( (path) => {
-            list_view.set_cursor (path, null, false);
-            TreeIter iter;
-            list_store.get_iter (out iter, path);
-            uint duration;
-            string album;
-            string artist;
-            string title;
-
-            list_store.get (iter,
-                            SongListStoreColumn.DURATION,
-                                out duration,
-                            SongListStoreColumn.ALBUM,
-                                out album,
-                            SongListStoreColumn.ARTIST,
-                                out artist,
-                            SongListStoreColumn.TITLE,
-                                out title
-                            );
-            controls.set_duration (duration);
-
-            if (! win.is_active) {
-                var text = "";
-                if (title != null) {
-                    text = "<i>%s</i>".printf (Markup.escape_text (title));
-                } else {
-                    text = "<i>Unkown song</i>";
-                }
-
-                if (artist != null) {
-                    text += " by <i>%s</i>".printf (Markup.escape_text (artist));
-                }
-
-                if (album != null) {
-                    text += " from <i>%s</i>".printf (Markup.escape_text (album));
-                }
-
-                try {
-                    if (this.notification == null) {
-                        this.notification = new Notification (" ", text, null);
-                    } else {
-                        string? empty = null;
-                        this.notification.update (" ", text, empty);
-                    }
-
-                    var cache = AlbumArtCache.get_default ();
-                    notification.set_image_from_pixbuf (cache.lookup (artist,
-                                                                      album));
-                    notification.show ();
-                } catch (Error error) {
-                    warning ("Failed to show notification: %s", error.message);
-                }
-            }
-
-            win.set_title ("%s - %s".printf (artist ?? "Unknown Artist",
-                                             title ?? "Unknown Song"));
-        });
-
-        scrolled.add (list_view);
-
-        paned.pack_end (scrolled);
-
-        box.pack_start (paned);
-
-        win.show_all ();
     }
 }

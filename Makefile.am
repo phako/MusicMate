@@ -13,6 +13,7 @@ musicmate_SOURCES=src/main.vala \
 				  src/audio-controls.vala \
 				  src/application.vala \
 				  src/media-keys.vala \
+				  src/main-window.vala \
 				  $(NULL)
 
 PACKAGES=--pkg gtk+-3.0 \
