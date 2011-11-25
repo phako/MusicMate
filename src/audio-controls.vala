@@ -48,6 +48,7 @@ internal class MusicMate.AudioControls : Box {
     private dynamic Gst.Element playbin;
     private ToggleButton play_button;
     private MusicMate.MediaKeys keys;
+    private uint position_update_timeout;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -80,15 +81,35 @@ internal class MusicMate.AudioControls : Box {
 
     public AudioControls () {
         Object ( orientation: Orientation.VERTICAL, spacing: 3);
-        this.set_homogeneous (false);
 
+        this.set_homogeneous (false);
         this.keys = new MusicMate.MediaKeys ();
+        this.position_update_timeout = 0;
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
         var bus = this.playbin.get_bus ();
         bus.add_watch ( (bus, message) => {
-            if (message.type == Gst.MessageType.EOS) {
+            switch (message.type) {
+            case Gst.MessageType.EOS:
                 this.uri = this.need_next ();
+                break;
+            case Gst.MessageType.STATE_CHANGED:
+                if (message.src == this.playbin) {
+                    Gst.State old_state, new_state;
+                    message.parse_state_changed (out old_state,
+                                                 out new_state,
+                                                 null);
+                    if (old_state == Gst.State.PAUSED &&
+                        new_state == Gst.State.PLAYING) {
+                            this.update_position (true);
+                    } else if (old_state == Gst.State.PLAYING &&
+                               new_state == Gst.State.PAUSED) {
+                        this.update_position (false);
+                    }
+                }
+                break;
+            default:
+                break;
             }
 
             return true;
@@ -151,15 +172,28 @@ internal class MusicMate.AudioControls : Box {
         });
         this.keys.next.connect ( () => { next_button.clicked (); } );
         this.keys.previous.connect ( () => { back_button.clicked (); } );
+    }
 
-/*        Timeout.add_seconds (1, () => {
-            var format = Gst.Format.TIME;
-            int64 duration = 0;
+    private void update_position (bool update) {
+        if (update) {
+            if (this.position_update_timeout == 0) {
+                Timeout.add_seconds (1, this.update_position_cb);
+            }
+        } else {
+            if (this.position_update_timeout != 0) {
+                Source.remove (this.position_update_timeout);
+                this.position_update_timeout = 0;
+            }
+        }
+    }
 
-            this.playbin.query_position (ref format, out duration);
-            this.scale.set_value ((double) duration);
+    private bool update_position_cb () {
+        var format = Gst.Format.TIME;
+        int64 duration = 0;
 
-            return true; 
-        }); */
+        this.playbin.query_position (ref format, out duration);
+        this.scale.set_value ((double) duration);
+
+        return true;
     }
 }
