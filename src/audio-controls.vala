@@ -85,12 +85,13 @@ internal class MusicMate.AudioControls : Box {
         this.keys = new MusicMate.MediaKeys ();
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
-        this.playbin.about_to_finish.connect ( () => {
-            // This event doesn't come from main-tread, and need_next triggers
-            // UI updates, so let's lock the GDK Threads
-            Gdk.threads_enter ();
-            this.playbin.uri = need_next ();
-            Gdk.threads_leave ();
+        var bus = this.playbin.get_bus ();
+        bus.add_watch ( (bus, message) => {
+            if (message.type == Gst.MessageType.EOS) {
+                this.uri = this.need_next ();
+            }
+
+            return true;
         });
 
         var adjustment = null as Adjustment;

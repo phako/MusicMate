@@ -45,7 +45,7 @@ internal class MusicMate.SongModelMixer : Object {
         this.model.get_iter (out iter, path);
         this.model.get (iter, SongListStoreColumn.URL, out url);
 
-        Idle.add (() => { this.current (path); return false; });
+        this.current (path);
 
         return url;
     }
