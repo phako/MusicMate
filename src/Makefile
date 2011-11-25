@@ -30,3 +30,5 @@ clean:
 	rm -f *.c
 	rm -f musicmate
 	rm -f core
+	rm -f massif.out.*
+	rm -f valgrind.log.*
