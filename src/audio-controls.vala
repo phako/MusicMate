@@ -135,7 +135,11 @@ internal class MusicMate.AudioControls : Box {
         back_button.show ();
         this.pack_start (back_button, false, false);
         back_button.clicked.connect ( () => {
-            this.uri = need_previous ();
+            if (play_button.get_active ()) {
+                this.uri = need_previous ();
+            } else {
+                play_button.set_active (true);
+            }
         });
 
         play_button = new PlayPauseButton ();
@@ -159,7 +163,11 @@ internal class MusicMate.AudioControls : Box {
         next_button.show ();
         this.pack_start (next_button, false, false);
         next_button.clicked.connect ( () => {
-            this.uri = need_next ();
+            if (play_button.get_active ()) {
+                this.uri = need_next ();
+            } else {
+                play_button.set_active (true);
+            }
         });
 
         this.keys.play.connect ( () => { play_button.set_active (true); } );

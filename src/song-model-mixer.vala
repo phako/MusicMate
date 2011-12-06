@@ -73,11 +73,14 @@ internal class MusicMate.SongModelMixer : Object {
     public string? get_next () {
         var next = this.get_current ();
         this.next_song = (this.next_song + 1) % this.shuffle_list.length;
+
         return next;
     }
 
     public string? get_previous () {
-        this.next_song = (this.next_song -1 ) % this.shuffle_list.length;
+        this.next_song = (this.next_song + this.shuffle_list.length - 1);
+        this.next_song %= this.shuffle_list.length;
+
         return this.get_current ();
     }
 
