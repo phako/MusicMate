@@ -1,0 +1,4 @@
+MusicMate is a simple audio player using the tracker project[1] as its meta-data
+source.
+
+[1] http://www.tracker-project.org
