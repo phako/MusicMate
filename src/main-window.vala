@@ -46,7 +46,10 @@ internal class MusicMate.MainWindow : Gtk.Window {
         var list_store = list_view.model as FilteredSongList;
 
         this.mixer = new SongModelMixer (list_store);
-        this.mixer.shuffle = true;
+        controls.bind_property ("shuffle",
+                                this.mixer,
+                                "shuffle",
+                                BindingFlags.DEFAULT);
 
         controls.need_next.connect (this.mixer.get_next);
         controls.need_previous.connect (this.mixer.get_previous);

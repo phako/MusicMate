@@ -33,6 +33,9 @@ internal class MusicMate.SongModelMixer : Object {
         this.grace_timer = 0;
         model.row_deleted.connect (this.on_model_row_modified);
         model.row_inserted.connect (this.on_model_row_modified);
+        this.notify["shuffle"].connect ( () => {
+            this.generate_shuffle_list ();
+        });
     }
 
     private string? get_current () {

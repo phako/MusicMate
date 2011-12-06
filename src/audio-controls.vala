@@ -17,10 +17,6 @@
 
 using Gtk;
 
-extern void gtk_button_box_set_child_non_homogeneous (ButtonBox container,
-                                                      Widget    child,
-                                                      bool      homogenous);
-
 internal class MusicMate.PlayPauseButton : ToggleButton {
     public Image play_image;
     public Image pause_image;
@@ -28,9 +24,9 @@ internal class MusicMate.PlayPauseButton : ToggleButton {
     public PlayPauseButton () {
         Object ();
 
-        play_image = new Image.from_stock (Stock.MEDIA_PLAY, IconSize.DIALOG);
+        play_image = new Image.from_stock (Stock.MEDIA_PLAY, IconSize.BUTTON);
         pause_image = new Image.from_stock (Stock.MEDIA_PAUSE,
-                                            IconSize.DIALOG);
+                                            IconSize.BUTTON);
         this.set_image (play_image);
     }
 
@@ -74,13 +70,15 @@ internal class MusicMate.AudioControls : Box {
         }
     }
 
+    public bool shuffle { get; set; }
+
     public void set_duration (uint duration) {
         this.scale.set_range (0.0, (double) (duration * Gst.SECOND));
         this.scale.set_value (0.0);
     }
 
     public AudioControls () {
-        Object ( orientation: Orientation.VERTICAL, spacing: 3);
+        Object ( orientation: Orientation.HORIZONTAL, spacing: 3);
 
         this.set_homogeneous (false);
         this.keys = new MusicMate.MediaKeys ();
@@ -115,31 +113,34 @@ internal class MusicMate.AudioControls : Box {
             return true;
         });
 
+        var shuffle = new CheckButton.with_mnemonic ("_Shuffle");
+        this.pack_end (shuffle, false, false);
+        shuffle.show ();
+        shuffle.toggled.connect ( () => {
+            this.shuffle = shuffle.get_active ();
+        });
+
         var adjustment = null as Adjustment;
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);
         this.scale.draw_value = false;
         this.scale.show ();
         this.pack_end (this.scale);
 
-        var controls = new ButtonBox (Orientation.HORIZONTAL);
         this.set_homogeneous (false);
-        controls.set_layout (ButtonBoxStyle.CENTER);
-        controls.show ();
 
         var back_button = new Button ();
         var image = new Image.from_stock (Stock.MEDIA_PREVIOUS,
                                           IconSize.BUTTON);
         back_button.set_image (image);
         back_button.show ();
-        controls.pack_start (back_button);
-        gtk_button_box_set_child_non_homogeneous (controls, back_button, true);
+        this.pack_start (back_button, false, false);
         back_button.clicked.connect ( () => {
             this.uri = need_previous ();
         });
 
         play_button = new PlayPauseButton ();
         play_button.show ();
-        controls.pack_start (play_button);
+        this.pack_start (play_button, false, false);
         play_button.toggled.connect ( (source) => {
             if (source.get_active ()) {
                 if (this.playbin.uri == null) {
@@ -156,13 +157,10 @@ internal class MusicMate.AudioControls : Box {
                                       IconSize.BUTTON);
         next_button.set_image (image);
         next_button.show ();
-        controls.pack_start (next_button);
-        gtk_button_box_set_child_non_homogeneous (controls, next_button, true);
+        this.pack_start (next_button, false, false);
         next_button.clicked.connect ( () => {
             this.uri = need_next ();
         });
-
-        this.pack_start (controls);
 
         this.keys.play.connect ( () => { play_button.set_active (true); } );
         this.keys.pause.connect ( () => { play_button.set_active (false); } );
