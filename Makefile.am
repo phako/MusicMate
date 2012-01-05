@@ -1,6 +1,11 @@
-bin_PROGRAMS=musicmate
+desktopdir=$(datadir)/applications
+desktop_DATA=data/MusicMate.desktop
 
-NULL=
+icondir=$(datadir)/MusicMate/icons
+icon_DATA=data/album-default.png data/album-default.svg
+
+EXTRA_DIST=data
+bin_PROGRAMS=musicmate
 
 musicmate_SOURCES=src/main.vala \
 				  src/album-art-cache.vala \
@@ -13,8 +18,7 @@ musicmate_SOURCES=src/main.vala \
 				  src/audio-controls.vala \
 				  src/application.vala \
 				  src/media-keys.vala \
-				  src/main-window.vala \
-				  $(NULL)
+				  src/main-window.vala
 
 PACKAGES=--pkg gtk+-3.0 \
 		 --pkg gdk-pixbuf-2.0 \
@@ -22,11 +26,11 @@ PACKAGES=--pkg gtk+-3.0 \
 		 --pkg tracker-sparql-0.10 \
 		 --pkg gstreamer-0.10 \
 		 --pkg libnotify \
-		 $(NULL)
+		 --pkg build-config
 
 musicmate_VALAFLAGS=$(PACKAGES) \
+					--vapidir=$(top_srcdir)/src \
 					-g
-					$(NULL)
 
 musicmate_CFLAGS=\
 				 $(GTK_CFLAGS) \
@@ -35,7 +39,7 @@ musicmate_CFLAGS=\
 				 $(TRACKER_CFLAGS) \
 				 $(GSTREAMER_CFLAGS) \
 				 $(NOTIFY_CFLAGS) \
-				 $(NULL)
+				 -DICON_DIR='"$(icondir)"'
 
 musicmate_LDADD=\
 				 $(GTK_LIBS) \
@@ -43,9 +47,6 @@ musicmate_LDADD=\
 				 $(GEE_LIBS) \
 				 $(TRACKER_LIBS) \
 				 $(GSTREAMER_LIBS) \
-				 $(NOTIFY_LIBS) \
-				 $(NULL)
+				 $(NOTIFY_LIBS)
 
-desktopdir=${datadir}/applications
-desktop_DATA=data/MusicMate.desktop
-EXTRA_DIST=data
+

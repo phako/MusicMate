@@ -149,6 +149,15 @@ internal class MusicMate.AlbumArtCache : Object {
                                                   true);
         } catch (Error error) { }
 */
+        try {
+            var path = Path.build_filename (BuildConfig.ICON_DIR,
+                                            "album-default.png");
+            return new Pixbuf.from_file_at_scale (path,
+                                                  96,
+                                                  96,
+                                                  true);
+        } catch (Error error) { }
+
         return null;
     }
 
