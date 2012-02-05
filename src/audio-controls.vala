@@ -170,7 +170,9 @@ internal class MusicMate.AudioControls : Box {
             }
         });
 
-        this.keys.play.connect ( () => { play_button.set_active (true); } );
+        this.keys.play.connect ( () => {
+            play_button.set_active (!play_button.get_active ());
+        } );
         this.keys.pause.connect ( () => { play_button.set_active (false); } );
         this.keys.stop.connect ( () => {
             play_button.set_active (false);
