@@ -45,6 +45,7 @@ internal class MusicMate.AudioControls : Box {
     private ToggleButton play_button;
     private MusicMate.MediaKeys keys;
     private uint position_update_timeout;
+    private GLib.Settings settings;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -80,6 +81,11 @@ internal class MusicMate.AudioControls : Box {
     public AudioControls () {
         Object ( orientation: Orientation.HORIZONTAL, spacing: 3);
 
+        this.settings = new GLib.Settings ("org.jensge.MusicMate");
+        this.settings.bind ("shuffle",
+                            this,
+                            "shuffle",
+                            SettingsBindFlags.DEFAULT);
         this.set_homogeneous (false);
         this.keys = new MusicMate.MediaKeys ();
         this.position_update_timeout = 0;
@@ -116,9 +122,12 @@ internal class MusicMate.AudioControls : Box {
         var shuffle = new CheckButton.with_mnemonic ("_Shuffle");
         this.pack_end (shuffle, false, false);
         shuffle.show ();
-        shuffle.toggled.connect ( () => {
-            this.shuffle = shuffle.get_active ();
-        });
+        this.bind_property ("shuffle",
+                            shuffle,
+                            "active",
+                            BindingFlags.DEFAULT |
+                            BindingFlags.SYNC_CREATE |
+                            BindingFlags.BIDIRECTIONAL);
 
         var adjustment = null as Adjustment;
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);
