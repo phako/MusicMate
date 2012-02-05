@@ -7,6 +7,9 @@ icon_DATA=data/album-default.png data/album-default.svg
 EXTRA_DIST=data
 bin_PROGRAMS=musicmate
 
+gsettings_SCHEMAS = data/org.jensge.MusicMate.gschema.xml
+@GSETTINGS_RULES@
+
 musicmate_SOURCES=src/main.vala \
 				  src/album-art-cache.vala \
 				  src/album-list-store.vala \

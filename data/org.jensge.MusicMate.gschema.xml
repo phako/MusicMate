@@ -1,0 +1,14 @@
+<schemalist>
+    <schema id="org.jensge.MusicMate"
+            path="/org/jensge/MusicMate/"
+            gettext-domain="MusicMate">
+        <key name="shuffle" type="b">
+            <default>false</default>
+            <summary>Shuffle playback</summary>
+            <description>If true, do randomized playback through the (selected
+                parts) of the collection
+            </description>
+        </key>
+    </schema>
+</schemalist>
+

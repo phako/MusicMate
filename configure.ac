@@ -16,6 +16,8 @@ AM_INIT_AUTOMAKE([1.11.1 tar-ustar no-dist-gzip dist-xz subdir-objects])
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
 
+GLIB_GSETTINGS
+
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.2)
 PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0)
 PKG_CHECK_MODULES(GEE, gee-1.0)
