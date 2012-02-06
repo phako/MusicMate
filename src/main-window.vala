@@ -49,7 +49,8 @@ internal class MusicMate.MainWindow : Gtk.Window {
         controls.bind_property ("shuffle",
                                 this.mixer,
                                 "shuffle",
-                                BindingFlags.DEFAULT);
+                                BindingFlags.DEFAULT |
+                                BindingFlags.SYNC_CREATE);
 
         controls.need_next.connect (this.mixer.get_next);
         controls.need_previous.connect (this.mixer.get_previous);
