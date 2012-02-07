@@ -29,6 +29,7 @@ internal class MusicMate.MainWindow : Gtk.Window {
         this.set_default_size (800, 480);
 
         var box = new Box (Orientation.VERTICAL, 6);
+        box.margin = 12;
         box.show ();
         this.add (box);
 

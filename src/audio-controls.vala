@@ -81,6 +81,8 @@ internal class MusicMate.AudioControls : Box {
     public AudioControls () {
         Object ( orientation: Orientation.HORIZONTAL, spacing: 3);
 
+        this.margin_top = 6;
+
         this.settings = new GLib.Settings ("org.jensge.MusicMate");
         this.settings.bind ("shuffle",
                             this,
