@@ -22,7 +22,8 @@ internal class MusicMate.Application : Gtk.Application {
 
     public Application () {
         Object (application_id : APPNAME,
-                flags: ApplicationFlags.FLAGS_NONE);
+                flags: ApplicationFlags.FLAGS_NONE |
+                       ApplicationFlags.HANDLES_OPEN);
     }
 
     public override void activate () {
@@ -35,5 +36,9 @@ internal class MusicMate.Application : Gtk.Application {
 
         var win = new MainWindow ();
         this.add_window (win);
+    }
+
+    public override void open (File[] files, string hint) {
+        this.activate ();
     }
 }
