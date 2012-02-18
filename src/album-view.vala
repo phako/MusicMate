@@ -25,8 +25,6 @@ internal class MusicMate.AlbumView : IconView {
         this.set_pixbuf_column (AlbumListStoreColumn.ALBUM_ART);
         this.set_text_column (AlbumListStoreColumn.TITLE);
         this.set_selection_mode (SelectionMode.MULTIPLE);
-        this.set_columns (2);
-        this.set_item_width (115);
 
         this.selection_changed.connect (this.on_selection_changed);
     }

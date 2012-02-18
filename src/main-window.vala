@@ -18,12 +18,42 @@
 using Gtk;
 using Notify;
 
+internal class MusicMate.Switcher : ButtonBox {
+    public Switcher (Notebook notebook) {
+        Object (layout_style: ButtonBoxStyle.CENTER);
+        var album_button = new RadioButton.with_label (null, "Albums");
+        album_button.set_mode (false);
+        album_button.set_alignment (0.5f, 0.5f);
+        this.pack_start (album_button, false, false, 0);
+        album_button.show ();
+        album_button.toggled.connect ( () => {
+            if (album_button.active) {
+                notebook.set_current_page (0);
+            }
+        });
+
+        var song_button = new RadioButton.with_label_from_widget (album_button,
+                                                                  "Songs");
+        song_button.set_mode (false);
+        song_button.set_alignment (0.5f, 0.5f);
+        this.pack_start (song_button, false, false, 0);
+        song_button.show ();
+        song_button.toggled.connect ( () => {
+            if (song_button.active) {
+                notebook.set_current_page (1);
+            }
+        });
+    }
+}
+
 internal class MusicMate.MainWindow : Gtk.Window {
     private SongModelMixer mixer;
-    private Notification notification;
+    private Notifier notifier;
 
     public MainWindow () {
         Object (type: WindowType.TOPLEVEL);
+
+        this.notifier = new Notifier ();
 
         this.set_size_request (640, 480);
         this.set_default_size (800, 480);
@@ -33,12 +63,19 @@ internal class MusicMate.MainWindow : Gtk.Window {
         box.show ();
         this.add (box);
 
+
+        var notebook = new Notebook ();
+        notebook.show_tabs = false;
+
+        var switcher = new Switcher (notebook);
+        switcher.show ();
+
+        box.pack_start (switcher, false);
+        box.pack_start (notebook, true, true);
+
         var controls = new AudioControls ();
         controls.show ();
         box.pack_end (controls, false);
-
-        var paned = new Box(Orientation.HORIZONTAL, 6);
-        paned.show ();
 
         var scrolled = new ScrolledWindow (null, null);
         scrolled.show ();
@@ -64,11 +101,11 @@ internal class MusicMate.MainWindow : Gtk.Window {
                                   BindingFlags.DEFAULT);
 
         scrolled.add (album_view);
-        scrolled.set_size_request (300, -1);
-        paned.pack_start (scrolled, false);
+        notebook.append_page (scrolled);
 
         scrolled = new ScrolledWindow (null, null);
         scrolled.show ();
+        notebook.append_page (scrolled);
 
         list_view.show ();
         list_view.row_activated.connect ( (path) => {
@@ -96,59 +133,16 @@ internal class MusicMate.MainWindow : Gtk.Window {
                             );
             controls.set_duration (duration);
 
-            this.update_notification (title, artist, album);
-
             this.set_title ("%s - %s".printf (artist ?? "Unknown Artist",
                                               title ?? "Unknown Song"));
+
+            if (!this.is_active) {
+                this.notifier.update (title, artist, album);
+            }
         });
 
         scrolled.add (list_view);
 
-        paned.pack_end (scrolled);
-
-        box.pack_start (paned);
-
         this.show_all ();
-
     }
-
-    private void update_notification (string? title,
-                                      string? artist,
-                                      string? album) {
-
-        if (this.is_active) {
-            return;
-        }
-
-        var text = "";
-        if (title != null) {
-            text = "<i>%s</i>".printf (Markup.escape_text
-                                        (title ?? "Unknown Title"));
-        }
-
-        if (artist != null) {
-            text += " by <i>%s</i>".printf (Markup.escape_text (artist));
-        }
-
-        if (album != null) {
-            text += " from <i>%s</i>".printf (Markup.escape_text (album));
-        }
-
-        try {
-            if (unlikely (this.notification == null)) {
-                this.notification = new Notification (" ", text, null);
-            } else {
-                string? empty = null;
-                this.notification.update (" ", text, empty);
-            }
-
-            var cache = AlbumArtCache.get_default ();
-            notification.set_image_from_pixbuf (cache.lookup (artist,
-                                                              album));
-            notification.show ();
-        } catch (Error error) {
-            warning ("Failed to show notification: %s", error.message);
-        }
-    }
-
 }
