@@ -7,6 +7,8 @@ icon_DATA=data/album-default.png data/album-default.svg
 EXTRA_DIST=data
 bin_PROGRAMS=musicmate
 
+ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+
 gsettings_SCHEMAS = data/org.jensge.MusicMate.gschema.xml
 @GSETTINGS_RULES@
 
@@ -26,13 +28,11 @@ musicmate_SOURCES=src/main.vala \
 PACKAGES=--pkg gtk+-3.0 \
 		 --pkg gdk-pixbuf-2.0 \
 		 --pkg gee-1.0 \
-		 --pkg tracker-sparql-0.10 \
+		 --pkg tracker-sparql-0.14 \
 		 --pkg gstreamer-0.10 \
-		 --pkg libnotify \
-		 --pkg build-config
+		 --pkg libnotify
 
 musicmate_VALAFLAGS=$(PACKAGES) \
-					--vapidir=$(top_srcdir)/src \
 					-g
 
 musicmate_CFLAGS=\

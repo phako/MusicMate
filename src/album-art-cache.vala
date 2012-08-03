@@ -18,6 +18,9 @@
 using Gee;
 using Gdk;
 
+[CCode (cname="ICON_DIR")]
+extern const string ICON_DIR;
+
 internal class MusicMate.AlbumArtCache : Object {
     private static AlbumArtCache instance;
     private const string invalid_chars = "()[]<>{}_!@#$^&*+=|\\/\"'?~";
@@ -150,7 +153,7 @@ internal class MusicMate.AlbumArtCache : Object {
         } catch (Error error) { }
 */
         try {
-            var path = Path.build_filename (BuildConfig.ICON_DIR,
+            var path = Path.build_filename (ICON_DIR,
                                             "album-default.png");
             return new Pixbuf.from_file_at_scale (path,
                                                   96,
