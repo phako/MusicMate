@@ -93,6 +93,7 @@ internal class MusicMate.AudioControls : Box {
         this.position_update_timeout = 0;
 
         this.playbin = Gst.ElementFactory.make ("playbin2", null);
+        this.playbin.video_sink = Gst.ElementFactory.make ("fakesink", null);
         var bus = this.playbin.get_bus ();
         bus.add_watch ( (bus, message) => {
             switch (message.type) {
