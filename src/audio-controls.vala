@@ -92,10 +92,10 @@ internal class MusicMate.AudioControls : Box {
         this.keys = new MusicMate.MediaKeys ();
         this.position_update_timeout = 0;
 
-        this.playbin = Gst.ElementFactory.make ("playbin2", null);
+        this.playbin = Gst.ElementFactory.make ("playbin", null);
         this.playbin.video_sink = Gst.ElementFactory.make ("fakesink", null);
         var bus = this.playbin.get_bus ();
-        bus.add_watch ( (bus, message) => {
+        bus.add_watch (Priority.DEFAULT, (bus, message) => {
             switch (message.type) {
             case Gst.MessageType.EOS:
                 this.uri = this.need_next ();
@@ -208,10 +208,9 @@ internal class MusicMate.AudioControls : Box {
     }
 
     private bool update_position_cb () {
-        var format = Gst.Format.TIME;
         int64 duration = 0;
 
-        this.playbin.query_position (ref format, out duration);
+        this.playbin.query_position (Gst.Format.TIME, out duration);
         this.scale.set_value ((double) duration);
 
         return true;

@@ -28,12 +28,12 @@ musicmate_SOURCES=src/main.vala \
 PACKAGES=--pkg gtk+-3.0 \
 		 --pkg gdk-pixbuf-2.0 \
 		 --pkg gee-1.0 \
-		 --pkg tracker-sparql-0.14 \
-		 --pkg gstreamer-0.10 \
+		 --pkg tracker-sparql-1.0 \
+		 --pkg gstreamer-1.0 \
 		 --pkg libnotify
 
 musicmate_VALAFLAGS=$(PACKAGES) \
-					-g
+					-g --enable-experimental
 
 musicmate_CFLAGS=\
 				 $(GTK_CFLAGS) \
