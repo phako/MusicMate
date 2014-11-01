@@ -18,41 +18,15 @@
 using Gtk;
 using Notify;
 
-internal class MusicMate.Switcher : ButtonBox {
-    public Switcher (Notebook notebook) {
-        Object (layout_style: ButtonBoxStyle.CENTER);
-        var album_button = new RadioButton.with_label (null, "Albums");
-        album_button.set_mode (false);
-        album_button.set_alignment (0.5f, 0.5f);
-        this.pack_start (album_button, false, false, 0);
-        album_button.show ();
-        album_button.toggled.connect ( () => {
-            if (album_button.active) {
-                notebook.set_current_page (0);
-            }
-        });
-
-        var song_button = new RadioButton.with_label_from_widget (album_button,
-                                                                  "Songs");
-        song_button.set_mode (false);
-        song_button.set_alignment (0.5f, 0.5f);
-        this.pack_start (song_button, false, false, 0);
-        song_button.show ();
-        song_button.toggled.connect ( () => {
-            if (song_button.active) {
-                notebook.set_current_page (1);
-            }
-        });
-    }
-}
-
 internal class MusicMate.MainWindow : Gtk.Window {
     private SongModelMixer mixer;
     private Notifier notifier;
 
     public MainWindow () {
         Object (type: WindowType.TOPLEVEL);
+    }
 
+    public override void constructed () {
         this.notifier = new Notifier ();
 
         this.set_size_request (640, 480);
@@ -63,15 +37,17 @@ internal class MusicMate.MainWindow : Gtk.Window {
         box.show ();
         this.add (box);
 
+        var stack = new Stack ();
+        stack.show ();
 
-        var notebook = new Notebook ();
-        notebook.show_tabs = false;
-
-        var switcher = new Switcher (notebook);
+        var center = new Box (Orientation.HORIZONTAL, 6);
+        var switcher = new StackSwitcher ();
         switcher.show ();
+        switcher.set_stack (stack);
+        center.set_center_widget (switcher);
 
-        box.pack_start (switcher, false);
-        box.pack_start (notebook, true, true);
+        box.pack_start (center, false);
+        box.pack_start (stack, true, true);
 
         var controls = new AudioControls ();
         controls.show ();
@@ -101,11 +77,11 @@ internal class MusicMate.MainWindow : Gtk.Window {
                                   BindingFlags.DEFAULT);
 
         scrolled.add (album_view);
-        notebook.append_page (scrolled);
+        stack.add_titled (scrolled, "albums", "Albums");
 
         scrolled = new ScrolledWindow (null, null);
         scrolled.show ();
-        notebook.append_page (scrolled);
+        stack.add_titled (scrolled, "songs", "Songs");
 
         list_view.show ();
         list_view.row_activated.connect ( (path) => {
