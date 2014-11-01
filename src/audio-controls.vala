@@ -24,9 +24,11 @@ internal class MusicMate.PlayPauseButton : ToggleButton {
     public PlayPauseButton () {
         Object ();
 
-        play_image = new Image.from_stock (Stock.MEDIA_PLAY, IconSize.BUTTON);
-        pause_image = new Image.from_stock (Stock.MEDIA_PAUSE,
-                                            IconSize.BUTTON);
+
+        play_image = new Image.from_icon_name ("media-playback-start",
+                                               IconSize.BUTTON);
+        pause_image = new Image.from_icon_name ("media-playback-pause",
+                                                IconSize.BUTTON);
         this.set_image (play_image);
     }
 
@@ -141,8 +143,8 @@ internal class MusicMate.AudioControls : Box {
         this.set_homogeneous (false);
 
         var back_button = new Button ();
-        var image = new Image.from_stock (Stock.MEDIA_PREVIOUS,
-                                          IconSize.BUTTON);
+        var image = new Image.from_icon_name ("media-skip-backward",
+                                              IconSize.BUTTON);
         back_button.set_image (image);
         back_button.show ();
         this.pack_start (back_button, false, false);
@@ -169,8 +171,8 @@ internal class MusicMate.AudioControls : Box {
         });
 
         var next_button = new Button ();
-        image = new Image.from_stock (Stock.MEDIA_NEXT,
-                                      IconSize.BUTTON);
+        image = new Image.from_icon_name ("media-skip-forward",
+                                          IconSize.BUTTON);
         next_button.set_image (image);
         next_button.show ();
         this.pack_start (next_button, false, false);
