@@ -34,8 +34,9 @@ internal class MusicMate.Application : Gtk.Application {
             return;
         }
 
-        var win = new MainWindow ();
+        var win = new MainWindow (this);
         this.add_window (win);
+        win.present ();
     }
 
     public override void open (File[] files, string hint) {

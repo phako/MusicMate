@@ -18,15 +18,23 @@
 using Gtk;
 using Notify;
 
-internal class MusicMate.MainWindow : Gtk.Window {
+internal class MusicMate.MainWindow : Gtk.ApplicationWindow {
     private SongModelMixer mixer;
     private Notifier notifier;
 
-    public MainWindow () {
-        Object (type: WindowType.TOPLEVEL);
+    public MainWindow (Application app) {
+        Object (application: app);
     }
 
     public override void constructed () {
+        base.constructed ();
+
+        var header = new HeaderBar ();
+        header.show ();
+        header.set_show_close_button (true);
+        header.has_subtitle = false;
+        this.set_titlebar (header);
+
         this.notifier = new Notifier ();
 
         this.set_size_request (640, 480);
