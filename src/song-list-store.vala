@@ -43,6 +43,7 @@ SELECT
         nmm:artistName(nmm:performer(?song))
 {
         ?song a nmm:MusicPiece
+        FILTER(fn:starts-with(nie:url(?song), '%s'))
 }
 
 ORDER BY
@@ -74,7 +75,12 @@ ORDER BY
         try {
             this.clear ();
             var connection = yield Sparql.Connection.get_async ();
-            var cursor = yield connection.query_async (QUERY);
+            unowned string music_dir = Environment.get_user_special_dir
+                                        (UserDirectory.MUSIC);
+            var uri = File.new_for_path (music_dir).get_uri ();
+            var query = QUERY.printf (uri);
+            var cursor = yield connection.query_async (query);
+            debug ("Running SPARQL query %s", query);
             while (cursor.next ()) {
                 TreeIter iter;
                 this.append (out iter);

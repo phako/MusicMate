@@ -51,7 +51,10 @@ SELECT
                  tracker:available "true" }) as albumyear
 {
     ?album a nmm:MusicAlbum
-    FILTER (EXISTS { ?_3 nmm:musicAlbum ?album; tracker:available "true" })
+    FILTER (EXISTS {
+                { ?_3 nmm:musicAlbum ?album; tracker:available "true" }
+                FILTER(fn:starts-with(nie:url(?_3), '%s'))
+            })
 }
 ORDER BY ?album_artist ?albumyear nie:title(?album)
 """;
@@ -70,7 +73,12 @@ ORDER BY ?album_artist ?albumyear nie:title(?album)
     private async void fill_list_store () {
         try {
             var connection = yield Sparql.Connection.get_async ();
-            var cursor = yield connection.query_async (ALBUM_QUERY);
+            unowned string music_path = Environment.get_user_special_dir
+                                        (UserDirectory.MUSIC);
+            var uri = File.new_for_path (music_path).get_uri ();
+            var query = ALBUM_QUERY.printf (uri);
+            var cursor = yield connection.query_async (query);
+            debug ("Running SPARQL query %s", query);
             var cache = AlbumArtCache.get_default ();
             while (cursor.next ()) {
                 TreeIter iter;
