@@ -25,7 +25,7 @@ internal enum MusicMate.AlbumListStoreColumn {
     ID
 }
 
-internal class MusicMate.AlbumListStore : ListStore {
+internal class MusicMate.AlbumListStore : Gtk.ListStore {
     private const string ALBUM_QUERY =
 """
 

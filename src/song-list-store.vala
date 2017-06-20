@@ -29,7 +29,7 @@ internal enum MusicMate.SongListStoreColumn {
     ARTIST
 }
 
-internal class MusicMate.SongListStore : ListStore {
+internal class MusicMate.SongListStore : Gtk.ListStore {
     private const string QUERY =
 """
 SELECT
