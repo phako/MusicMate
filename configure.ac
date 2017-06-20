@@ -20,7 +20,7 @@ GLIB_GSETTINGS
 
 PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.2)
 PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0)
-PKG_CHECK_MODULES(GEE, gee-1.0)
+PKG_CHECK_MODULES(GEE, gee-0.8)
 PKG_CHECK_MODULES(TRACKER, tracker-sparql-1.0)
 PKG_CHECK_MODULES(GSTREAMER, gstreamer-1.0)
 PKG_CHECK_MODULES(NOTIFY, libnotify)
@@ -38,7 +38,7 @@ AS_IF([test "x$enable_vala" = xyes],
        then
            AC_MSG_ERROR([Cannot find the "valac" compiler in your PATH])
        else
-           VALA_CHECK_PACKAGES([gtk+-3.0 gdk-pixbuf-2.0 gee-1.0])
+           VALA_CHECK_PACKAGES([gtk+-3.0 gdk-pixbuf-2.0 gee-0.8])
            VALA_CHECK_PACKAGES([tracker-sparql-1.0 gstreamer-1.0])
            VALA_CHECK_PACKAGES([libnotify])
        fi

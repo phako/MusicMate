@@ -28,7 +28,7 @@ musicmate_SOURCES=src/main.vala \
 
 PACKAGES=--pkg gtk+-3.0 \
 		 --pkg gdk-pixbuf-2.0 \
-		 --pkg gee-1.0 \
+		 --pkg gee-0.8 \
 		 --pkg tracker-sparql-1.0 \
 		 --pkg gstreamer-1.0 \
 		 --pkg libnotify
