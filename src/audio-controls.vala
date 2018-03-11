@@ -25,9 +25,9 @@ internal class MusicMate.PlayPauseButton : ToggleButton {
         Object ();
 
 
-        play_image = new Image.from_icon_name ("media-playback-start",
+        play_image = new Image.from_icon_name ("media-playback-start-symbolic",
                                                IconSize.BUTTON);
-        pause_image = new Image.from_icon_name ("media-playback-pause",
+        pause_image = new Image.from_icon_name ("media-playback-pause-symbolic",
                                                 IconSize.BUTTON);
         this.set_image (play_image);
     }
@@ -124,7 +124,12 @@ internal class MusicMate.AudioControls : Box {
             return true;
         });
 
-        var shuffle = new CheckButton.with_mnemonic ("_Shuffle");
+        var image = new Image.from_icon_name ("media-playlist-shuffle-symbolic",
+                                              IconSize.BUTTON);
+        var shuffle = new ToggleButton ();
+        shuffle.set_image (image);
+
+
         this.pack_end (shuffle, false, false);
         shuffle.show ();
         this.bind_property ("shuffle",
@@ -143,8 +148,8 @@ internal class MusicMate.AudioControls : Box {
         this.set_homogeneous (false);
 
         var back_button = new Button ();
-        var image = new Image.from_icon_name ("media-skip-backward",
-                                              IconSize.BUTTON);
+        image = new Image.from_icon_name ("media-skip-backward-symbolic",
+                                          IconSize.BUTTON);
         back_button.set_image (image);
         back_button.show ();
         this.pack_start (back_button, false, false);
@@ -171,7 +176,7 @@ internal class MusicMate.AudioControls : Box {
         });
 
         var next_button = new Button ();
-        image = new Image.from_icon_name ("media-skip-forward",
+        image = new Image.from_icon_name ("media-skip-forward-symbolic",
                                           IconSize.BUTTON);
         next_button.set_image (image);
         next_button.show ();
