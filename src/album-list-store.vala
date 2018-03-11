@@ -34,11 +34,11 @@ SELECT
     tracker:coalesce(
         (SELECT GROUP_CONCAT(nmm:artistName(?artist), ",")
          WHERE { ?album nmm:albumArtist ?artist }),
-        (SELECT GROUP_CONCAT((SELECT nmm:artistName(nmm:performer(?_12)) as perf
+        (SELECT GROUP_CONCAT((SELECT nmm:artistName(nmm:performer(?_12)) as ?perf
                               WHERE { ?_12 nmm:musicAlbum ?album }
-                              GROUP BY ?perf), ",") as album_performer
+                              GROUP BY ?perf), ",") as ?album_performer
          WHERE { })
-    ) as album_artist
+    ) as ?album_artist
 
     tracker:coalesce(nmm:albumTrackCount(?album),
                      (SELECT COUNT(?_1)
@@ -48,7 +48,7 @@ SELECT
     (SELECT GROUP_CONCAT(fn:year-from-dateTime(?c), ",")
      WHERE { ?_2 nmm:musicAlbum ?album;
                  nie:contentCreated ?c;
-                 tracker:available "true" }) as albumyear
+                 tracker:available "true" }) as ?albumyear
 {
     ?album a nmm:MusicAlbum
     FILTER (EXISTS {
