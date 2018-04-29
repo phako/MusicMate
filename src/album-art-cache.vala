@@ -153,12 +153,10 @@ internal class MusicMate.AlbumArtCache : Object {
         } catch (Error error) { }
 */
         try {
-            var path = Path.build_filename (ICON_DIR,
-                                            "album-default.png");
-            return new Pixbuf.from_file_at_scale (path,
-                                                  96,
-                                                  96,
-                                                  true);
+            return new Pixbuf.from_resource_at_scale ("/org/jensge/MusicMate/data/album-default.svg",
+                                                      96,
+                                                      96,
+                                                      true);
         } catch (Error error) { }
 
         return null;
