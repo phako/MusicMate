@@ -48,6 +48,7 @@ internal class MusicMate.AudioControls : Box {
     private MusicMate.MediaKeys keys;
     private uint position_update_timeout;
     private GLib.Settings settings;
+    private ulong value_changed_id;
 
     public signal string? need_next ();
     public signal string? need_previous ();
@@ -143,6 +144,11 @@ internal class MusicMate.AudioControls : Box {
         this.scale = new Scale (Orientation.HORIZONTAL, adjustment);
         this.scale.draw_value = false;
         this.scale.show ();
+        this.value_changed_id = this.scale.value_changed.connect(() => {
+            this.playbin.seek_simple (Gst.Format.TIME,
+                                      Gst.SeekFlags.ACCURATE | Gst.SeekFlags.FLUSH,
+                                      (int64) this.scale.get_value());
+        });
         this.pack_end (this.scale);
 
         this.set_homogeneous (false);
@@ -218,7 +224,9 @@ internal class MusicMate.AudioControls : Box {
         int64 duration = 0;
 
         this.playbin.query_position (Gst.Format.TIME, out duration);
+        SignalHandler.block (this.scale, this.value_changed_id);
         this.scale.set_value ((double) duration);
+        SignalHandler.unblock (this.scale, this.value_changed_id);
 
         return true;
     }
