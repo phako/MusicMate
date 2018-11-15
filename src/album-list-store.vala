@@ -79,14 +79,15 @@ ORDER BY ?album_artist ?albumyear nie:title(?album)
             var query = ALBUM_QUERY.printf (uri);
             var cursor = yield connection.query_async (query);
             debug ("Running SPARQL query %s", query);
-            var cache = AlbumArtCache.get_default ();
+
             while (cursor.next ()) {
                 TreeIter iter;
+
                 this.append (out iter);
                 this.set (iter,
                           AlbumListStoreColumn.ALBUM_ART,
-                              cache.lookup (cursor.get_string (1),
-                                            cursor.get_string (0)),
+                              AlbumArtCache.lookup (cursor.get_string (1),
+                                                    cursor.get_string (0)),
                           AlbumListStoreColumn.TITLE,
                               "%s (%d)".printf (cursor.get_string (0),
                                                 (int) cursor.get_integer (2)),

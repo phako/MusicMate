@@ -48,9 +48,8 @@ public class MusicMate.Notifier : GLib.Object {
                 this.notification.update (" ", text, empty);
             }
 
-            var cache = AlbumArtCache.get_default ();
-            this.notification.set_image_from_pixbuf (cache.lookup (artist,
-                                                                   album));
+            var cover = AlbumArtCache.lookup (artist, album);
+            this.notification.set_image_from_pixbuf (cover);
             this.notification.show ();
             this.timeout_id = Timeout.add_seconds (10, () => {
                 this.timeout_id = 0;

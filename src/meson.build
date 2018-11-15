@@ -12,4 +12,4 @@ executable('musicmate',
      'media-keys.vala',
      'main-window.vala',
      'notifier.vala'],
-     dependencies : [gtk, gdk_pixbuf, gee, gstreamer, notify, tracker])
+     dependencies : [gtk, gdk_pixbuf, gee, gstreamer, notify, tracker, mediaart])
