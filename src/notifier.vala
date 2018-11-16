@@ -15,53 +15,50 @@
     along with MusicMate.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using Notify;
-
 public class MusicMate.Notifier : GLib.Object {
-    private Notify.Notification notification;
     private uint timeout_id;
 
     public void update (string? title, string? artist, string? album) {
+        var notification = new GLib.Notification (title);
+
         var text = "";
         if (title != null) {
-            text = "<i>%s</i>".printf (Markup.escape_text
-                                        (title ?? "Unknown Title"));
+            text = "%s".printf (Markup.escape_text
+                                (title ?? "Unknown Title"));
         }
 
         if (artist != null) {
-            text += " by <i>%s</i>".printf (Markup.escape_text (artist));
+            text += " by %s".printf (Markup.escape_text (artist));
         }
 
         if (album != null) {
-            text += " from <i>%s</i>".printf (Markup.escape_text (album));
+            text += " from %s".printf (Markup.escape_text (album));
         }
 
-        try {
-            if (this.timeout_id != 0) {
-                Source.remove (this.timeout_id);
-            }
-            if (this.notification == null) {
-                this.notification = new Notify.Notification (" ", text, null);
-                this.notification.set_urgency (Urgency.LOW);
-            } else {
-                string? empty = null;
-                this.notification.update (" ", text, empty);
-            }
+        notification.set_body (text);
 
-            var cover = AlbumArtCache.lookup (artist, album);
-            this.notification.set_image_from_pixbuf (cover);
-            this.notification.show ();
-            this.timeout_id = Timeout.add_seconds (10, () => {
-                this.timeout_id = 0;
-                try {
-                    this.notification.close ();
-                } catch (Error error) {}
-
-                return false;
-            });
-        } catch (Error error) {
-            warning ("Failed to show notification: %s", error.message);
+        var file = AlbumArtCache.lookup_file (artist, album);
+        if (file != null) {
+            var icon = new FileIcon (file);
+            notification.set_icon (icon);
         }
+
+        if (this.timeout_id != 0) {
+            Source.remove (this.timeout_id);
+            timeout_id = 0;
+        }
+
+        var app = GLib.Application.get_default ();
+        app.send_notification ("musicmate-title-popup", notification);
+
+        this.timeout_id = Timeout.add_seconds (10, () => {
+            var app2 = GLib.Application.get_default ();
+            app2.withdraw_notification ("musicmake-title-popup");
+
+            this.timeout_id = 0;
+
+            return false;
+        });
     }
 
 }

@@ -17,7 +17,6 @@
 
 int main (string[] args) {
     Gst.init (ref args);
-    Notify.init (MusicMate.Application.APPNAME);
 
     var app = new MusicMate.Application ();
     app.run (args);

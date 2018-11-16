@@ -16,7 +16,6 @@
 */
 
 using Gtk;
-using Notify;
 
 internal class MusicMate.MainWindow : Gtk.ApplicationWindow {
     private SongModelMixer mixer;

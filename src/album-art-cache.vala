@@ -22,6 +22,16 @@ using Gdk;
 extern const string ICON_DIR;
 
 namespace MusicMate.AlbumArtCache {
+    internal File? lookup_file (string? artist, string? album) {
+        File? file = null;
+
+        if (MediaArt.get_file (artist, album, "album", out file)) {
+            return file;
+        }
+
+        return null;
+    }
+
     internal Pixbuf? lookup (string? artist, string? album) {
         string? file = null;
 
