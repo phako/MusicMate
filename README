@@ -1,9 +1,0 @@
-MusicMate is a simple audio player using the tracker project[1] as its meta-data
-source.
-
-To build from git, run:
-
-autoreconf -if
-./configure --enable-vala
-
-[1] http://www.tracker-project.org
